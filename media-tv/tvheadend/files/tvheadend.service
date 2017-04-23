@@ -4,11 +4,23 @@ After=network.target
 
 [Service]
 Type=forking
-PIDFile=/run/tvheadend.pid
-ExecStart=/usr/bin/tvheadend -f -p /run/tvheadend.pid -C -c /etc/tvheadend -u tvheadend -g video
-ExecStop=/usr/bin/rm /run/tvheadend.pid
+User=tvheadend
+Group=video
+RuntimeDirectory=tvheadend
+PIDFile=/run/tvheadend/tvheadend.pid
+ExecStart=/usr/bin/tvheadend -6 -f -p /run/tvheadend.pid -C -c /etc/tvheadend
 Restart=always
 RestartSec=5
+DevicePolicy=closed
+#DVB devices
+DeviceAllow=char-DVB rw
+#GPUS -for transcoding
+DeviceAllow=char-drm rw
+RestrictAddressFamilies=AF_INET AF_INET6
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+
 
 [Install]
 WantedBy=multi-user.target
